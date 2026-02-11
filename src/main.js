@@ -24,87 +24,68 @@ function onSquareClick(e) {
 
   const row = parseInt(square.dataset.row);
   const col = parseInt(square.dataset.col);
-
   const piece = board[row][col];
 
+  document.querySelectorAll('.square.highlight').forEach(sq => sq.classList.remove('highlight'));
+
   //Select square
-  if (!selectedPiece && piece) {
-
-    if (piece && piece.color !== turn) return;
-
+  if (piece && piece.color === turn) {
     selectedPiece = piece;
     selectedPos = { row, col };
     const moves = getLegalMoves(piece, row, col, board);
     highlightMoves(moves);
+    return;
   }
 
   //Move square
-  /*else {
-    /*if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
-      board[row][col] = selectedPiece;
-      board[selectedPos.row][selectedPos.col] = null;
-      turn = turn === "white" ? "black" : "white";
-    }*/
-   /*const legalMoves = getLegalMoves(selectedPiece, sr, sc, board);
-   const isLegal = legalMoves.some(m => m.row === row && m.col === col);
+  if (selectedPiece) {
+    const legalMoves = getLegalMoves(selectedPiece, selectedPos.row, selectedPos.col, board);
+    const isLegal = legalMoves.some(m => m.row === row && m.col === col);
 
-if (isLegal) {
-  board[row][col] = selectedPiece;
-  board[sr][sc] = null;
-}
+    if (!isLegal) {
+      //Illegal move clicked
+      selectedPiece = null;
+      selectedPos = null;
+      return;
+    }
+
+    //Castling
+    if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
+      const r = selectedPos.row;
+      if (col > selectedPos.col) {
+        board[r][5] = board[r][7];
+        board[r][7] = null;
+        board[r][5].hasMoved = true;
+      } else {
+        board[r][3] = board[r][0];
+        board[r][0] = null;
+        board[r][3].hasMoved = true;
+      }
+    }
+
+    //Move
+    board[row][col] = selectedPiece;
+    board[selectedPos.row][selectedPos.col] = null;
+
+    //Promotion
+    if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
+      promotePawn(row, col, board);
+    }
+
+    selectedPiece.hasMoved = true;
+    turn = turn === "white" ? "black" : "white";
+
+    renderBoard(boardContainer, board);
+
+    // Check for endgame conditions
+    if (isCheckmate(turn, board)) alert(`${turn} is checkmated!`);
+    else if (isStalemate(turn, board)) alert(`Stalemate! It's a draw.`);
 
     selectedPiece = null;
     selectedPos = null;
-    renderBoard(boardContainer, board);
-  }*/
-
-    else {
-   const legalMoves = getLegalMoves(selectedPiece, selectedPos.row, selectedPos.col, board);
-   const isLegal = legalMoves.some(m => m.row === row && m.col === col);
-
-   if (isLegal) {
-
-    if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
-  const row = selectedPos.row;
-  // Kingside
-  if (col > selectedPos.col) {
-    board[row][5] = board[row][7]; // move rook
-    board[row][7] = null;
-    board[row][5].hasMoved = true;
-  } else { // Queenside
-    board[row][3] = board[row][0]; // move rook
-    board[row][0] = null;
-    board[row][3].hasMoved = true;
   }
 }
 
-      board[row][col] = selectedPiece;
-      board[selectedPos.row][selectedPos.col] = null;
-
-      // Check for promotion
-  if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
-    promotePawn(row, col, board);
-  }
-
-      turn = turn === "white" ? "black" : "white"; // switch turn
-      selectedPiece.hasMoved = true;
-
-
-      // Check for checkmate
-  if (isCheckmate(turn, board)) {
-    alert(`${turn} is checkmated!`);
-  }
-  // Check for stalemate
-else if (isStalemate(turn, board)) {
-  alert(`Stalemate! It's a draw.`);
-}
-   }
-
-   selectedPiece = null;
-   selectedPos = null;
-   renderBoard(boardContainer, board);
-}
-}
 
 function highlightMoves(moves) {
   moves.forEach(m => {

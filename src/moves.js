@@ -22,24 +22,21 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
   }
 
     //King movement
-    /*function kingMove(piece, fr, fc, tr, tc, board) {
-        return (Math.abs(tr - fr) <= 1 && Math.abs(tc - fc) <= 1);
-    }*/
-   function kingMove(piece, fr, fc, tr, tc, board) {
-  const dr = Math.abs(tr - fr);
-  const dc = Math.abs(tc - fc);
+    function kingMove(piece, fr, fc, tr, tc, board) {
+        const dr = Math.abs(tr - fr);
+        const dc = Math.abs(tc - fc);
+        
+        //Normal movement
+        if (dr <= 1 && dc <= 1) return true;
 
-  // Normal 1-square king move
-  if (dr <= 1 && dc <= 1) return true;
+        //Castling
+        if (!piece.hasMoved && dr === 0 && dc === 2) {
+            if (tc > fc) return canCastle(piece.color, "kingside", board);
+            else return canCastle(piece.color, "queenside", board);
+        }
 
-  // Castling attempt (king moves 2 squares horizontally)
-  if (!piece.hasMoved && dr === 0 && dc === 2) {
-    if (tc > fc) return canCastle(piece.color, "kingside", board);
-    else return canCastle(piece.color, "queenside", board);
-  }
-
-  return false;
-}
+        return false;
+    }
 
     //Queen movement
     function queenMove(piece, fr, fc, tr, tc, board) {
@@ -113,24 +110,10 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
     }
 }
 
-/*export function getLegalMoves(piece, fr, fc, board) {
-  const moves = [];
-
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      if (canMove(piece, fr, fc, r, c, board)) {
-        moves.push({ row: r, col: c });
-      }
-    }
-  }
-
-  return moves;
-}*/
-
 export function isKingInCheck(color, board) {
   let kingPos = null;
 
-  // 1. Find king
+  //Find king
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c];
@@ -140,9 +123,9 @@ export function isKingInCheck(color, board) {
     }
   }
 
-  if (!kingPos) return false; // should never happen
+  if (!kingPos) return false;
 
-  // 2. Check all enemy moves
+  //Check all enemy moves
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c];
@@ -201,7 +184,7 @@ export function isCheckmate(color, board) {
     }
   }
 
-  return true; // No legal moves & king in check → checkmate
+  return true; // No legal moves & king in check therefore checkmate
 }
 
 
@@ -212,13 +195,14 @@ function canCastle(color, side, board) {
   // King cannot currently be in check
   if (isKingInCheck(color, board)) return false;
 
+  //Kingside
   if (side === "kingside") {
     const rook = board[row][7];
     if (!rook || rook.type !== "rook" || rook.color !== color || rook.hasMoved) return false;
     if (board[row][5] || board[row][6]) return false; // squares must be empty
     if (isSquareAttacked(row, 5, color, board) || isSquareAttacked(row, 6, color, board)) return false;
     return true;
-  } else { // queenside
+  } else { //Queenside
     const rook = board[row][0];
     if (!rook || rook.type !== "rook" || rook.color !== color || rook.hasMoved) return false;
     if (board[row][1] || board[row][2] || board[row][3]) return false; // squares must be empty
@@ -240,22 +224,21 @@ function isSquareAttacked(row, col, color, board) {
 }
 
 export function isStalemate(color, board) {
-  // 1. If the king is in check, it's not stalemate
   if (isKingInCheck(color, board)) return false;
 
-  // 2. Check if the player has any legal moves
+  //Check for legal moves
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c];
       if (piece && piece.color === color) {
         const moves = getLegalMoves(piece, r, c, board);
         if (moves.length > 0) {
-          return false; // At least one legal move exists → not stalemate
+          return false; // At least one legal move exists
         }
       }
     }
   }
 
-  // 3. No legal moves and king not in check → stalemate
+  //Statemate
   return true;
 }
