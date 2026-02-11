@@ -1,4 +1,5 @@
 import { initialBoard, renderBoard } from './board.js';
+import { canMove } from './moves.js';
 
 const boardContainer = document.getElementById('board');
 
@@ -31,13 +32,14 @@ function onSquareClick(e) {
     }
   } 
   //Move square
-  else {
+  
+else {
+  if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
     board[row][col] = selectedPiece;
     board[selectedPos.row][selectedPos.col] = null;
-
-    selectedPiece = null;
-    selectedPos = null;
-
-    renderBoard(boardContainer, board);
   }
+
+  selectedPiece = null;
+  renderBoard(boardContainer, board);
+}
 }
