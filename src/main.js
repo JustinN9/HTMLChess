@@ -1,4 +1,5 @@
 import { initialBoard, renderBoard } from './board.js';
+import { promotePawn } from './piece.js';
 import { canMove } from './moves.js';
 import { getLegalMoves } from "./moves.js";
 import { isCheckmate } from "./moves.js";
@@ -64,6 +65,12 @@ if (isLegal) {
    if (isLegal) {
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
+
+      // Check for promotion
+  if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
+    promotePawn(row, col, board);
+  }
+
       turn = turn === "white" ? "black" : "white"; // switch turn
 
       // Check for checkmate

@@ -20,3 +20,20 @@ export class Piece {
     return map[this.color][this.type];
   }
 }
+
+export function promotePawn(row, col, board) {
+  const piece = board[row][col];
+  const newType = prompt(
+    "Promote your pawn to: (queen, rook, bishop, knight)",
+    "queen"
+  ).toLowerCase();
+
+  const validPromotions = ["queen", "rook", "bishop", "knight"];
+  if (!validPromotions.includes(newType)) {
+    alert("Invalid choice, promoting to queen by default");
+    piece.type = "queen";
+  } else {
+    piece.type = newType;
+  }
+  piece.symbol = piece.toUnicode();
+}
