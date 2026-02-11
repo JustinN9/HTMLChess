@@ -94,6 +94,10 @@ if (isLegal) {
   if (isCheckmate(turn, board)) {
     alert(`${turn} is checkmated!`);
   }
+  // Check for stalemate
+else if (isStalemate(turn, board)) {
+  alert(`Stalemate! It's a draw.`);
+}
    }
 
    selectedPiece = null;

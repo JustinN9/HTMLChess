@@ -238,3 +238,24 @@ function isSquareAttacked(row, col, color, board) {
   }
   return false;
 }
+
+export function isStalemate(color, board) {
+  // 1. If the king is in check, it's not stalemate
+  if (isKingInCheck(color, board)) return false;
+
+  // 2. Check if the player has any legal moves
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      if (piece && piece.color === color) {
+        const moves = getLegalMoves(piece, r, c, board);
+        if (moves.length > 0) {
+          return false; // At least one legal move exists → not stalemate
+        }
+      }
+    }
+  }
+
+  // 3. No legal moves and king not in check → stalemate
+  return true;
+}
