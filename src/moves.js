@@ -1,13 +1,55 @@
 export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
+
   if (!piece) return false;
+
   switch (piece.type) {
-    case "pawn":
-      return pawnMove(piece, fromRow, fromCol, toRow, toCol, board);
+    case "king":
+        return kingMove(piece, fromRow, fromCol, toRow, toCol, board);
+    case "queen":
+        return queenMove(piece, fromRow, fromCol, toRow, toCol, board);
     case "rook":
-      return rookMove(piece, fromRow, fromCol, toRow, toCol, board);
+        return rookMove(piece, fromRow, fromCol, toRow, toCol, board);
+    case "bishop":
+        return bishopMove(piece, fromRow, fromCol, toRow, toCol, board);
+    case "knight":
+        return knightMove(piece, fromRow, fromCol, toRow, toCol, board);
+    case "pawn":
+        return pawnMove(piece, fromRow, fromCol, toRow, toCol, board);
     default:
       return false;
   }
+
+    //King movement
+    function kingMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    //Queen movement
+    function queenMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    //Rook movement
+    function rookMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    //Bishop movement
+    function bishopMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    //Knight movement
+    function knightMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    //Pawn movement
+    function pawnMove(piece, fr, fc, tr, tc, board) {
+        return true;
+    }
+
+    /*
 
   //Pawn movement
   function pawnMove(piece, fr, fc, tr, tc, board) {
@@ -23,9 +65,10 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
   //En passant
 
   return false;
-}
+}*/
 
-
+//Rook movement
+/*
 function rookMove(piece, fr, fc, tr, tc, board) {
   if (fr !== tr && fc !== tc) return false;
 
@@ -43,6 +86,6 @@ function rookMove(piece, fr, fc, tr, tc, board) {
   }
 
   return true;
-}
+}*/
 
 }

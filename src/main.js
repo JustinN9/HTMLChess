@@ -30,16 +30,15 @@ function onSquareClick(e) {
       selectedPos = { row, col };
       square.classList.add("selected");
     }
-  } 
-  //Move square
-  
-else {
-  if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
-    board[row][col] = selectedPiece;
-    board[selectedPos.row][selectedPos.col] = null;
   }
 
-  selectedPiece = null;
-  renderBoard(boardContainer, board);
-}
+  //Move square
+  else {
+    if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
+      board[row][col] = selectedPiece;
+      board[selectedPos.row][selectedPos.col] = null;
+    }
+    selectedPiece = null;
+    renderBoard(boardContainer, board);
+  }
 }
