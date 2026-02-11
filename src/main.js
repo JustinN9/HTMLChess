@@ -72,6 +72,8 @@ if (isLegal) {
   }
 
       turn = turn === "white" ? "black" : "white"; // switch turn
+      selectedPiece.hasMoved = true;
+
 
       // Check for checkmate
   if (isCheckmate(turn, board)) {

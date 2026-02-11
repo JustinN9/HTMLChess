@@ -3,6 +3,7 @@ export class Piece {
     this.type = type;
     this.color = color;
     this.symbol = this.toUnicode();
+    this.hasMoved = false;
   }
 
   toUnicode() {
