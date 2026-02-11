@@ -36,10 +36,10 @@ export function renderBoard(container, boardArray) {
       const square = document.createElement('div');
       square.classList.add('square');
       square.classList.add((row + col) % 2 === 0 ? 'light' : 'dark');
-
+      square.dataset.row = row;
+      square.dataset.col = col;
       const piece = boardArray[row][col];
       square.textContent = piece ? piece.symbol : '';
-
       container.appendChild(square);
     }
   }
