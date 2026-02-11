@@ -22,9 +22,24 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
   }
 
     //King movement
-    function kingMove(piece, fr, fc, tr, tc, board) {
+    /*function kingMove(piece, fr, fc, tr, tc, board) {
         return (Math.abs(tr - fr) <= 1 && Math.abs(tc - fc) <= 1);
-    }
+    }*/
+   function kingMove(piece, fr, fc, tr, tc, board) {
+  const dr = Math.abs(tr - fr);
+  const dc = Math.abs(tc - fc);
+
+  // Normal 1-square king move
+  if (dr <= 1 && dc <= 1) return true;
+
+  // Castling attempt (king moves 2 squares horizontally)
+  if (!piece.hasMoved && dr === 0 && dc === 2) {
+    if (tc > fc) return canCastle(piece.color, "kingside", board);
+    else return canCastle(piece.color, "queenside", board);
+  }
+
+  return false;
+}
 
     //Queen movement
     function queenMove(piece, fr, fc, tr, tc, board) {
@@ -187,4 +202,39 @@ export function isCheckmate(color, board) {
   }
 
   return true; // No legal moves & king in check → checkmate
+}
+
+
+function canCastle(color, side, board) {
+  const row = color === "white" ? 7 : 0;
+  const kingCol = 4;
+
+  // King cannot currently be in check
+  if (isKingInCheck(color, board)) return false;
+
+  if (side === "kingside") {
+    const rook = board[row][7];
+    if (!rook || rook.type !== "rook" || rook.color !== color || rook.hasMoved) return false;
+    if (board[row][5] || board[row][6]) return false; // squares must be empty
+    if (isSquareAttacked(row, 5, color, board) || isSquareAttacked(row, 6, color, board)) return false;
+    return true;
+  } else { // queenside
+    const rook = board[row][0];
+    if (!rook || rook.type !== "rook" || rook.color !== color || rook.hasMoved) return false;
+    if (board[row][1] || board[row][2] || board[row][3]) return false; // squares must be empty
+    if (isSquareAttacked(row, 2, color, board) || isSquareAttacked(row, 3, color, board)) return false;
+    return true;
+  }
+}
+
+function isSquareAttacked(row, col, color, board) {
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      if (piece && piece.color !== color) {
+        if (canMove(piece, r, c, row, col, board)) return true;
+      }
+    }
+  }
+  return false;
 }

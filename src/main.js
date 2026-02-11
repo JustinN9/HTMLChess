@@ -63,6 +63,21 @@ if (isLegal) {
    const isLegal = legalMoves.some(m => m.row === row && m.col === col);
 
    if (isLegal) {
+
+    if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
+  const row = selectedPos.row;
+  // Kingside
+  if (col > selectedPos.col) {
+    board[row][5] = board[row][7]; // move rook
+    board[row][7] = null;
+    board[row][5].hasMoved = true;
+  } else { // Queenside
+    board[row][3] = board[row][0]; // move rook
+    board[row][0] = null;
+    board[row][3].hasMoved = true;
+  }
+}
+
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
 
