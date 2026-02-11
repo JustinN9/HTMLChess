@@ -1,6 +1,7 @@
 import { initialBoard, renderBoard } from './board.js';
 import { canMove } from './moves.js';
 import { getLegalMoves } from "./moves.js";
+import { isCheckmate } from "./moves.js";
 
 const boardContainer = document.getElementById('board');
 
@@ -64,6 +65,11 @@ if (isLegal) {
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
       turn = turn === "white" ? "black" : "white"; // switch turn
+
+      // Check for checkmate
+  if (isCheckmate(turn, board)) {
+    alert(`${turn} is checkmated!`);
+  }
    }
 
    selectedPiece = null;
