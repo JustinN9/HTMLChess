@@ -36,7 +36,11 @@ body {
 .sq-capture { outline: 3px solid var(--capture); }
 
 .square.selected {
-  background: #9bd3ff;
+  background: lightskyblue;
+}
+
+.square.highlight {
+  background-color: lightslategray;
 }
 
 #info { max-width: 300px; }

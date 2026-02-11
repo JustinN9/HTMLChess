@@ -95,3 +95,18 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
         return true;
     }
 }
+
+export function getLegalMoves(piece, fr, fc, board) {
+  const moves = [];
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (canMove(piece, fr, fc, r, c, board)) {
+        moves.push({ row: r, col: c });
+      }
+    }
+  }
+
+  return moves;
+}
+

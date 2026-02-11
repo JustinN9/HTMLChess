@@ -1,11 +1,13 @@
 import { initialBoard, renderBoard } from './board.js';
 import { canMove } from './moves.js';
+import { getLegalMoves } from "./moves.js";
 
 const boardContainer = document.getElementById('board');
 
 let board = initialBoard;
 let selectedPiece = null;
 let selectedPos = null;
+let turn = "white";
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -24,12 +26,14 @@ function onSquareClick(e) {
   const piece = board[row][col];
 
   //Select square
-  if (!selectedPiece) {
-    if (piece) {
-      selectedPiece = piece;
-      selectedPos = { row, col };
-      square.classList.add("selected");
-    }
+  if (!selectedPiece && piece) {
+
+    if (piece && piece.color !== turn) return;
+
+    selectedPiece = piece;
+    selectedPos = { row, col };
+    const moves = getLegalMoves(piece, row, col, board);
+    highlightMoves(moves);
   }
 
   //Move square
@@ -42,5 +46,15 @@ function onSquareClick(e) {
     selectedPiece = null;
     selectedPos = null;
     renderBoard(boardContainer, board);
+    turn = turn === "white" ? "black" : "white";
   }
+}
+
+function highlightMoves(moves) {
+  moves.forEach(m => {
+    const square = document.querySelector(
+      `.square[data-row="${m.row}"][data-col="${m.col}"]`
+    );
+    square.classList.add("highlight");
+  });
 }
