@@ -98,13 +98,71 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
     }
 }
 
-export function getLegalMoves(piece, fr, fc, board) {
+/*export function getLegalMoves(piece, fr, fc, board) {
   const moves = [];
 
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       if (canMove(piece, fr, fc, r, c, board)) {
         moves.push({ row: r, col: c });
+      }
+    }
+  }
+
+  return moves;
+}*/
+
+export function isKingInCheck(color, board) {
+  let kingPos = null;
+
+  // 1. Find king
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      if (piece && piece.type === "king" && piece.color === color) {
+        kingPos = { row: r, col: c };
+      }
+    }
+  }
+
+  if (!kingPos) return false; // should never happen
+
+  // 2. Check all enemy moves
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      if (piece && piece.color !== color) {
+        if (canMove(piece, r, c, kingPos.row, kingPos.col, board)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function simulateMove(board, fr, fc, tr, tc) {
+  const copy = board.map(row => row.slice());
+
+  copy[tr][tc] = copy[fr][fc];
+  copy[fr][fc] = null;
+
+  return copy;
+}
+
+export function getLegalMoves(piece, fr, fc, board) {
+  const moves = [];
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (canMove(piece, fr, fc, r, c, board)) {
+        const simulated = simulateMove(board, fr, fc, r, c);
+
+        // Reject moves that leave king in check
+        if (!isKingInCheck(piece.color, simulated)) {
+          moves.push({ row: r, col: c });
+        }
       }
     }
   }

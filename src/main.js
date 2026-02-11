@@ -37,17 +37,39 @@ function onSquareClick(e) {
   }
 
   //Move square
-  else {
-    if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
+  /*else {
+    /*if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
       turn = turn === "white" ? "black" : "white";
-    }
+    }*/
+   /*const legalMoves = getLegalMoves(selectedPiece, sr, sc, board);
+   const isLegal = legalMoves.some(m => m.row === row && m.col === col);
+
+if (isLegal) {
+  board[row][col] = selectedPiece;
+  board[sr][sc] = null;
+}
 
     selectedPiece = null;
     selectedPos = null;
     renderBoard(boardContainer, board);
-  }
+  }*/
+
+    else {
+   const legalMoves = getLegalMoves(selectedPiece, selectedPos.row, selectedPos.col, board);
+   const isLegal = legalMoves.some(m => m.row === row && m.col === col);
+
+   if (isLegal) {
+      board[row][col] = selectedPiece;
+      board[selectedPos.row][selectedPos.col] = null;
+      turn = turn === "white" ? "black" : "white"; // switch turn
+   }
+
+   selectedPiece = null;
+   selectedPos = null;
+   renderBoard(boardContainer, board);
+}
 }
 
 function highlightMoves(moves) {
