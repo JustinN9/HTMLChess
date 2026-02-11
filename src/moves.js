@@ -21,71 +21,77 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
 
     //King movement
     function kingMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        return (Math.abs(tr - fr) <= 1 && Math.abs(tc - fc) <= 1);
     }
 
     //Queen movement
     function queenMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        return (rookMove(fr, fc, tr, tc, board) || bishopMove(fr, fc, tr, tc, board));
     }
 
     //Rook movement
     function rookMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        if (fr !== tr && fc !== tc) return false;
+        return isPathClear(fr, fc, tr, tc, board);
     }
 
     //Bishop movement
     function bishopMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        if (Math.abs(tr - fr) !== Math.abs(tc - fc)) return false;
+        return isPathClear(fr, fc, tr, tc, board);
     }
 
     //Knight movement
     function knightMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        const dr = Math.abs(tr - fr);
+        const dc = Math.abs(tc - fc);
+        return (dr === 2 && dc === 1) || (dr === 1 && dc === 2);
     }
 
     //Pawn movement
     function pawnMove(piece, fr, fc, tr, tc, board) {
-        return true;
+        const dir = piece.color === "white" ? -1 : 1;
+        const startRow = piece.color === "white" ? 6 : 1;
+        
+        //Move forward one space
+        if (fc === tc && tr === fr + dir && board[tr][tc] === null) {
+            return true;
+        }
+
+        //Move forawrd two spaces from start
+        if (
+            fr === startRow &&
+            fc === tc &&
+            tr === fr + dir * 2 &&
+            board[fr + dir][fc] === null &&
+            board[tr][tc] === null) {
+            return true;
+        }
+
+        //Capture
+        if (
+            Math.abs(tc - fc) === 1 &&
+            tr === fr + dir &&
+            board[tr][tc] !== null) {
+            return true;
+        }
+        
+        return false;
     }
 
-    /*
+    function isPathClear(fr, fc, tr, tc, board) {
+        const rowStep = Math.sign(tr - fr);
+        const colStep = Math.sign(tc - fc);
 
-  //Pawn movement
-  function pawnMove(piece, fr, fc, tr, tc, board) {
-  const dir = piece.color === "white" ? -1 : 1;
+        let r = fr + rowStep;
+        let c = fc + colStep;
 
-  //Move two forward iff first move for pawn
-
-  //Move one forward
-  if (fc === tc && tr === fr + dir && board[tr][tc] === null) {
-    return true;
-  }
-
-  //En passant
-
-  return false;
-}*/
-
-//Rook movement
-/*
-function rookMove(piece, fr, fc, tr, tc, board) {
-  if (fr !== tr && fc !== tc) return false;
-
-  // path blocking
-  const rowStep = Math.sign(tr - fr);
-  const colStep = Math.sign(tc - fc);
-
-  let r = fr + rowStep;
-  let c = fc + colStep;
-
-  while (r !== tr || c !== tc) {
-    if (board[r][c] !== null) return false;
-    r += rowStep;
-    c += colStep;
-  }
-
-  return true;
-}*/
-
+  
+        while (r !== tr || c !== tc) {
+            if (board[r][c] !== null) return false;
+            r += rowStep;
+            c += colStep;
+        }
+        return true;
+    }
 }

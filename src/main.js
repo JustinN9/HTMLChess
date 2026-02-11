@@ -38,7 +38,9 @@ function onSquareClick(e) {
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
     }
+    
     selectedPiece = null;
+    selectedPos = null;
     renderBoard(boardContainer, board);
   }
 }
