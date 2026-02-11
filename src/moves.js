@@ -1,22 +1,24 @@
 export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
+    const target = board[toRow][toCol];
+    if (target && target.color === piece.color) return false;
 
-  if (!piece) return false;
+    if (!piece) return false;
 
-  switch (piece.type) {
-    case "king":
-        return kingMove(piece, fromRow, fromCol, toRow, toCol, board);
-    case "queen":
-        return queenMove(piece, fromRow, fromCol, toRow, toCol, board);
-    case "rook":
-        return rookMove(piece, fromRow, fromCol, toRow, toCol, board);
-    case "bishop":
-        return bishopMove(piece, fromRow, fromCol, toRow, toCol, board);
-    case "knight":
-        return knightMove(piece, fromRow, fromCol, toRow, toCol, board);
-    case "pawn":
-        return pawnMove(piece, fromRow, fromCol, toRow, toCol, board);
-    default:
-      return false;
+    switch (piece.type) {
+        case "king":
+            return kingMove(piece, fromRow, fromCol, toRow, toCol, board);
+        case "queen":
+            return queenMove(piece, fromRow, fromCol, toRow, toCol, board);
+        case "rook":
+            return rookMove(piece, fromRow, fromCol, toRow, toCol, board);
+        case "bishop":
+            return bishopMove(piece, fromRow, fromCol, toRow, toCol, board);
+        case "knight":
+            return knightMove(piece, fromRow, fromCol, toRow, toCol, board);
+        case "pawn":
+            return pawnMove(piece, fromRow, fromCol, toRow, toCol, board);
+        default:
+            return false;
   }
 
     //King movement
@@ -26,7 +28,7 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
 
     //Queen movement
     function queenMove(piece, fr, fc, tr, tc, board) {
-        return (rookMove(fr, fc, tr, tc, board) || bishopMove(fr, fc, tr, tc, board));
+        return (rookMove(piece, fr, fc, tr, tc, board) || bishopMove(piece, fr, fc, tr, tc, board));
     }
 
     //Rook movement
@@ -109,4 +111,3 @@ export function getLegalMoves(piece, fr, fc, board) {
 
   return moves;
 }
-

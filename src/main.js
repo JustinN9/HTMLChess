@@ -41,12 +41,12 @@ function onSquareClick(e) {
     if (canMove(selectedPiece, selectedPos.row, selectedPos.col, row, col, board)) {
       board[row][col] = selectedPiece;
       board[selectedPos.row][selectedPos.col] = null;
+      turn = turn === "white" ? "black" : "white";
     }
-    
+
     selectedPiece = null;
     selectedPos = null;
     renderBoard(boardContainer, board);
-    turn = turn === "white" ? "black" : "white";
   }
 }
 
