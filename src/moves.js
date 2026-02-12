@@ -1,4 +1,4 @@
-export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
+export function canMove(piece, fromRow, fromCol, toRow, toCol, board, lastMove) {
     const target = board[toRow][toCol];
     if (target && target.color === piece.color) return false;
 
@@ -16,7 +16,7 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
         case "knight":
             return knightMove(piece, fromRow, fromCol, toRow, toCol, board);
         case "pawn":
-            return pawnMove(piece, fromRow, fromCol, toRow, toCol, board);
+            return pawnMove(piece, fromRow, fromCol, toRow, toCol, board, lastMove);
         default:
             return false;
   }
@@ -89,7 +89,17 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board) {
             board[tr][tc] !== null) {
             return true;
         }
-        
+
+        //En passant
+        //if (lastMove!==null){
+          /*
+            Math.abs(tc - fc) === 1 &&
+            tr === fr + dir &&
+            board[tr][tc] === lastMove){ *///&&
+            //board[tr][tc] !== null) {
+          //  return true;
+        //}
+
         return false;
     }
 
@@ -149,12 +159,12 @@ function simulateMove(board, fr, fc, tr, tc) {
   return copy;
 }
 
-export function getLegalMoves(piece, fr, fc, board) {
+export function getLegalMoves(piece, fr, fc, board, lastMove) {
   const moves = [];
 
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
-      if (canMove(piece, fr, fc, r, c, board)) {
+      if (canMove(piece, fr, fc, r, c, board, lastMove)) {
         const simulated = simulateMove(board, fr, fc, r, c);
 
         // Reject moves that leave king in check

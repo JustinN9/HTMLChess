@@ -11,6 +11,7 @@ let board = initialBoard;
 let selectedPiece = null;
 let selectedPos = null;
 let turn = "white";
+let lastMove = null; 
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -33,14 +34,14 @@ function onSquareClick(e) {
   if (piece && piece.color === turn) {
     selectedPiece = piece;
     selectedPos = { row, col };
-    const moves = getLegalMoves(piece, row, col, board);
+    const moves = getLegalMoves(piece, row, col, board, lastMove);
     highlightMoves(moves);
     return;
   }
 
   //Move square
   if (selectedPiece) {
-    const legalMoves = getLegalMoves(selectedPiece, selectedPos.row, selectedPos.col, board);
+    const legalMoves = getLegalMoves(selectedPiece, selectedPos.row, selectedPos.col, board, lastMove);
     const isLegal = legalMoves.some(m => m.row === row && m.col === col);
 
     if (!isLegal) {
@@ -67,6 +68,13 @@ function onSquareClick(e) {
     //Move
     board[row][col] = selectedPiece;
     board[selectedPos.row][selectedPos.col] = null;
+
+    // after a legal move is made
+lastMove = {
+  piece: selectedPiece,
+  from: { row: selectedPos.row, col: selectedPos.col },
+  to:   { row, col }
+};
 
     //Promotion
     if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
