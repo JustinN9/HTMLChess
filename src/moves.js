@@ -242,3 +242,29 @@ export function isStalemate(color, board) {
   //Statemate
   return true;
 }
+
+export function isInsufficientMaterial(board) {
+  const pieces = [];
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (board[r][c]) pieces.push(board[r][c]);
+    }
+  }
+
+  // King vs King
+  if (pieces.length === 2) return true;
+
+  // King + minor vs King
+  if (pieces.length === 3) {
+    return pieces.some(p => p.type === "bishop" || p.type === "knight");
+  }
+
+  // King + bishop vs King + bishop (same color)
+  if (pieces.length === 4) {
+    const bishops = pieces.filter(p => p.type === "bishop");
+    if (bishops.length === 2) return true;
+  }
+
+  return false;
+}

@@ -3,6 +3,7 @@ import { promotePawn } from './piece.js';
 import { canMove } from './moves.js';
 import { getLegalMoves } from "./moves.js";
 import { isCheckmate } from "./moves.js";
+import { isInsufficientMaterial } from "./moves.js";
 
 const boardContainer = document.getElementById('board');
 
@@ -79,6 +80,7 @@ function onSquareClick(e) {
 
     // Check for endgame conditions
     if (isCheckmate(turn, board)) alert(`${turn} is checkmated!`);
+    else if (isInsufficientMaterial(board)) alert("Draw by insufficient material");
     else if (isStalemate(turn, board)) alert(`Stalemate! It's a draw.`);
 
     selectedPiece = null;
