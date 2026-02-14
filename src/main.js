@@ -13,6 +13,10 @@ let selectedPiece = null;
 let selectedPos = null;
 let turn = "white";
 let lastMove = null; 
+let halfMoveClock = 0;
+let positionHistory = {};
+
+
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -39,6 +43,9 @@ function onSquareClick(e) {
     highlightMoves(moves);
     return;
   }
+
+  const wasCapture = board[row][col] !== null;
+
 
   //Move square
   if (selectedPiece) {
@@ -84,6 +91,13 @@ function onSquareClick(e) {
     board[row][col] = selectedPiece;
     board[selectedPos.row][selectedPos.col] = null;
 
+    if (wasCapture) {
+      halfMoveClock = 0;
+    } else {
+      halfMoveClock++;
+    }
+
+
     // after a legal move is made
     lastMove = {
       piece: selectedPiece,
@@ -101,10 +115,21 @@ function onSquareClick(e) {
 
     renderBoard(boardContainer, board);
 
+const positionKey = generatePositionKey(board, turn);
+
+positionHistory[positionKey] = (positionHistory[positionKey] || 0) + 1;
+
+if (positionHistory[positionKey] >= 3) {
+  alert("Draw by threefold repetition");
+}
+
+
     // Check for endgame conditions
     if (isCheckmate(turn, board)) alert(`${turn} is checkmated!`);
     else if (isInsufficientMaterial(board)) alert("Draw by insufficient material");
     else if (isStalemate(turn, board)) alert(`Stalemate! It's a draw.`);
+    else if (halfMoveClock >= 100) alert("Draw by 50-move rule");
+
 
     selectedPiece = null;
     selectedPos = null;
@@ -119,4 +144,19 @@ function highlightMoves(moves) {
     );
     square.classList.add("highlight");
   });
+}
+
+function generatePositionKey(board, turn) {
+  let key = "";
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = board[r][c];
+      key += piece ? piece.type[0] + piece.color[0] : "--";
+    }
+  }
+
+  key += turn;
+
+  return key;
 }

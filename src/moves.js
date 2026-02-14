@@ -196,7 +196,7 @@ export function isCheckmate(color, board) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c];
       if (piece && piece.color === color) {
-        if (getLegalMoves(piece, r, c, board).length > 0) {
+        if (getLegalMoves(piece, r, c, board, lastMove).length > 0) {
           return false; // At least one legal move exists
         }
       }
