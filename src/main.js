@@ -66,6 +66,20 @@ function onSquareClick(e) {
       }
     }
 
+    // En Passant capture
+    if (
+      selectedPiece.type === "pawn" &&
+      lastMove &&
+      lastMove.piece.type === "pawn" &&
+      Math.abs(lastMove.from.row - lastMove.to.row) === 2 &&
+      row === lastMove.to.row + (selectedPiece.color === "white" ? -1 : 1) &&
+      col === lastMove.to.col &&
+      selectedPos.col !== col &&
+      board[row][col] === null
+    ) {
+      board[lastMove.to.row][lastMove.to.col] = null;
+    }
+
     //Move
     board[row][col] = selectedPiece;
     board[selectedPos.row][selectedPos.col] = null;

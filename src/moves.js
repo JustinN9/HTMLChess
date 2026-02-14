@@ -63,7 +63,7 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board, lastMove) 
     }
 
     //Pawn movement
-    function pawnMove(piece, fr, fc, tr, tc, board) {
+    function pawnMove(piece, fr, fc, tr, tc, board, lastMove) {
         const dir = piece.color === "white" ? -1 : 1;
         const startRow = piece.color === "white" ? 6 : 1;
         
@@ -91,16 +91,25 @@ export function canMove(piece, fromRow, fromCol, toRow, toCol, board, lastMove) 
         }
 
         //En passant
-        //if (lastMove!==null){
-          /*
-            Math.abs(tc - fc) === 1 &&
-            tr === fr + dir &&
-            board[tr][tc] === lastMove){ *///&&
-            //board[tr][tc] !== null) {
-          //  return true;
-        //}
-
-        return false;
+        if (
+          lastMove &&
+          lastMove.piece.type === "pawn" &&
+          Math.abs(lastMove.from.row - lastMove.to.row) === 2 // moved two squares
+          ) {
+            const enemyPawnRow = lastMove.to.row;
+            const enemyPawnCol = lastMove.to.col;
+            
+            if (
+              enemyPawnRow === fr &&                 // enemy pawn beside us
+              Math.abs(enemyPawnCol - fc) === 1 &&   // exactly one square sideways
+              tr === fr + dir &&                     // moving diagonally forward
+              tc === enemyPawnCol &&                 // moving into capture column
+              board[tr][tc] === null                 // landing square empty
+            ) {
+          return true;
+        }
+      }
+      return false;
     }
 
     function isPathClear(fr, fc, tr, tc, board) {
