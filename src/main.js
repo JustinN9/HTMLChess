@@ -4,6 +4,7 @@ import { canMove } from './moves.js';
 import { getLegalMoves } from "./moves.js";
 import { isCheckmate } from "./moves.js";
 import { isInsufficientMaterial } from "./moves.js";
+import { isStalemate } from './moves.js';
 
 const boardContainer = document.getElementById('board');
 
@@ -70,11 +71,11 @@ function onSquareClick(e) {
     board[selectedPos.row][selectedPos.col] = null;
 
     // after a legal move is made
-lastMove = {
-  piece: selectedPiece,
-  from: { row: selectedPos.row, col: selectedPos.col },
-  to:   { row, col }
-};
+    lastMove = {
+      piece: selectedPiece,
+      from: { row: selectedPos.row, col: selectedPos.col },
+      to:   { row, col }
+    };
 
     //Promotion
     if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
