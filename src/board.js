@@ -1,5 +1,30 @@
+/**
+ * board.js
+ *
+ * Handles:
+ * - Initial board setup
+ * - Rendering the board state to the DOM
+ *
+ * This module is strictly responsible for board representation and UI rendering.
+ * It does NOT handle move validation or game rules.
+ */
+
 import { Piece } from "./piece.js";
 
+/**
+ * Represents the starting position of a standard chess game.
+ *
+ * Board structure:
+ * - 8x8 2D array
+ * - Each entry is either a Piece or null
+ *
+ * Coordinate system:
+ * - board[row][col]
+ * - row 0 → Black's back rank
+ * - row 7 → White's back rank
+ *
+ * @type {(Piece | null)[][]}
+ */
 export const initialBoard = [
   [
     new Piece("rook", "black"),
@@ -29,6 +54,24 @@ export const initialBoard = [
   ],
 ];
 
+/**
+ * Renders the current board state into a DOM container.
+ *
+ * This function:
+ * - Clears the container before rendering
+ * - Iterates through each square in the board array
+ * - Creates DOM elements for squares
+ * - Applies alternating light/dark styles
+ * - Displays piece symbols when present
+ *
+ * NOTE:
+ * - This function is purely visual and does not modify game state
+ * - Uses dataset attributes for row/col to support event handling
+ *
+ * @param {HTMLElement} container - DOM element where the board will be rendered
+ * @param {(Piece | null)[][]} boardArray - Current board state
+ * @returns {void}
+ */
 export function renderBoard(container, boardArray) {
   container.innerHTML = '';
   for (let row = 0; row < 8; row++) {
