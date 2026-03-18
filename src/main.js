@@ -1,3 +1,19 @@
+/**
+ * main.js
+ *
+ * Handles:
+ * - Game state management
+ * - User interaction (click handling)
+ * - Turn logic
+ * - Rendering updates
+ * - Endgame detection
+ *
+ * This file acts as the controller between:
+ * - UI (board rendering)
+ * - Game logic (moves.js)
+ * - Piece logic (piece.js)
+ */
+
 import { initialBoard, renderBoard } from './board.js';
 import { promotePawn } from './piece.js';
 import { canMove } from './moves.js';
@@ -21,10 +37,25 @@ let positionHistory = {};
 renderBoard(boardContainer, board);
 addClickHandlers();
 
+/**
+ * Attaches click handler to the board container.
+ */
 function addClickHandlers() {
   boardContainer.addEventListener("click", onSquareClick);
 }
 
+/**
+ * Handles user clicks on board squares.
+ *
+ * Responsibilities:
+ * - Select piece
+ * - Highlight legal moves
+ * - Execute moves
+ * - Handle special rules (castling, en passant, promotion)
+ * - Update game state
+ *
+ * @param {MouseEvent} e
+ */
 function onSquareClick(e) {
   const square = e.target.closest(".square");
   if (!square) return;
@@ -136,7 +167,11 @@ if (positionHistory[positionKey] >= 3) {
   }
 }
 
-
+/**
+ * Highlights all legal destination squares for a selected piece.
+ *
+ * @param {{row:number, col:number}[]} moves
+ */
 function highlightMoves(moves) {
   moves.forEach(m => {
     const square = document.querySelector(
@@ -146,6 +181,23 @@ function highlightMoves(moves) {
   });
 }
 
+/**
+ * Generates a simplified position key for repetition detection.
+ *
+ * Includes:
+ * - Piece placement
+ * - Active player (turn)
+ *
+ * NOTE:
+ * This is NOT a full FEN representation.
+ * Missing:
+ * - Castling rights
+ * - En passant square
+ *
+ * @param {(import("./piece.js").Piece | null)[][]} board
+ * @param {"white" | "black"} turn
+ * @returns {string}
+ */
 function generatePositionKey(board, turn) {
   let key = "";
 
