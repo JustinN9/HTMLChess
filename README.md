@@ -111,7 +111,7 @@ Confirms no legal moves while not in check.
 ## Design Decisions
 
 - No external libraries were used to stregthen undesrtanding of core JavaScript
-- Aspects of the game are put into their respective files.
+- Aspects of the game are put into their respective files
 
 ---
 
