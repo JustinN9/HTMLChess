@@ -270,3 +270,71 @@ button:hover {
 .black-move {
   color: #cfcfcf;
 }
+
+#promotion-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+#promotion-modal.hidden {
+  display: none;
+}
+
+.promotion-box {
+  background: #2b2b2b;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  min-width: 220px;
+}
+
+.promotion-options {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 12px;
+}
+
+.promotion-options button {
+  font-size: 28px;
+  background: #3a3a3a;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.promotion-options button:hover {
+  background: #555;
+  transform: scale(1.1);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  /* key fix */
+  white-space: nowrap;
+}
+
+.history-row span {
+  white-space: nowrap;
+}
+
+#history {
+  overflow-x: auto; /* prevents breaking layout if it gets long */
+}
+
+#history {
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+}

@@ -13,37 +13,40 @@
  *    - Endgame detection
  */
 
-import { initialBoard, renderBoard } from './board.js';
-import { Piece, promotePawn } from './piece.js';
-import { getLegalMoves } from "./moves.js";
-import { isCheckmate } from "./moves.js";
+import { Piece } from './piece.js';
+import { getLegalMoves, isCheckmate } from "./moves.js";
+import { renderBoard } from './board.js';
+
+/* =========================
+   DOM
+========================= */
 
 const boardContainer = document.getElementById('board');
 const resetButton = document.getElementById("reset");
-
-/* =========================
-   GAME OVER UI
-========================= */
 
 const gameOverScreen = document.getElementById("game-over");
 const gameOverTitle = document.getElementById("game-over-title");
 const gameOverMessage = document.getElementById("game-over-message");
 const gameOverReset = document.getElementById("game-over-reset");
 
+const promotionModal = document.getElementById("promotion-modal");
+
 /* =========================
-   GAME STATE
+   STATE
 ========================= */
+
+let board = createFreshBoard();
+
+let selectedPiece = null;
+let selectedPos = null;
+
+let turn = "white";
+let lastMove = null;
 
 let gameOver = false;
 let moveHistory = [];
 
-let board = createFreshBoard();
-let selectedPiece = null;
-let selectedPos = null;
-let turn = "white";
-let lastMove = null;
-let halfMoveClock = 0;
-let positionHistory = {};
+let pendingPromotion = null;
 
 /* =========================
    INIT
@@ -53,13 +56,20 @@ renderBoard(boardContainer, board);
 addClickHandlers();
 
 resetButton.addEventListener("click", resetGame);
+
 gameOverReset.addEventListener("click", () => {
   hideGameOver();
   resetGame();
 });
 
+document.querySelectorAll("#promotion-modal button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    applyPromotion(btn.dataset.piece);
+  });
+});
+
 /* =========================
-   BOARD CREATION
+   BOARD
 ========================= */
 
 function createFreshBoard() {
@@ -94,7 +104,7 @@ function createFreshBoard() {
 }
 
 /* =========================
-   INPUT
+   CLICK HANDLING
 ========================= */
 
 function addClickHandlers() {
@@ -102,19 +112,21 @@ function addClickHandlers() {
 }
 
 function onSquareClick(e) {
-  if (gameOver) return;
+  if (gameOver || pendingPromotion) return;
 
   const square = e.target.closest(".square");
   if (!square) return;
 
-  const row = parseInt(square.dataset.row);
-  const col = parseInt(square.dataset.col);
+  const row = +square.dataset.row;
+  const col = +square.dataset.col;
   const piece = board[row][col];
 
-  document.querySelectorAll(".square.highlight")
-    .forEach(sq => sq.classList.remove("highlight"));
+  clearHighlights();
 
-  /* SELECT PIECE */
+  /* =========================
+     SELECT PIECE (RESTORED STYLE)
+  ========================= */
+
   if (piece && piece.color === turn) {
     selectedPiece = piece;
     selectedPos = { row, col };
@@ -122,12 +134,10 @@ function onSquareClick(e) {
     const moves = getLegalMoves(piece, row, col, board, lastMove);
     highlightMoves(moves);
 
+    // keep original behavior: ONLY move highlights, no extra square styling
     return;
   }
 
-  const wasCapture = board[row][col] !== null;
-
-  /* MOVE PIECE */
   if (!selectedPiece) return;
 
   const legalMoves = getLegalMoves(
@@ -146,7 +156,12 @@ function onSquareClick(e) {
     return;
   }
 
-  /* CASTLING */
+  const wasCapture = board[row][col] !== null;
+
+  /* =========================
+     CASTLING
+  ========================= */
+
   if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
     const r = selectedPos.row;
 
@@ -161,7 +176,10 @@ function onSquareClick(e) {
     }
   }
 
-  /* EN PASSANT */
+  /* =========================
+     EN PASSANT
+  ========================= */
+
   if (
     selectedPiece.type === "pawn" &&
     lastMove &&
@@ -169,55 +187,78 @@ function onSquareClick(e) {
     Math.abs(lastMove.from.row - lastMove.to.row) === 2 &&
     row === lastMove.to.row + (selectedPiece.color === "white" ? -1 : 1) &&
     col === lastMove.to.col &&
-    selectedPos.col !== col &&
     board[row][col] === null
   ) {
     board[lastMove.to.row][lastMove.to.col] = null;
   }
 
-  /* MOVE */
+  /* =========================
+     MOVE
+  ========================= */
+
   board[row][col] = selectedPiece;
   board[selectedPos.row][selectedPos.col] = null;
 
-  halfMoveClock = wasCapture ? 0 : halfMoveClock + 1;
-
-  /* HISTORY MOVE */
-  const moveRecord = {
-    piece: selectedPiece.type,
-    color: selectedPiece.color,
+  lastMove = {
+    piece: selectedPiece,
     from: { ...selectedPos },
     to: { row, col },
     capture: wasCapture
   };
 
-  lastMove = moveRecord;
-  moveHistory.push(moveRecord);
-  updateHistoryUI();
-
-  /* PROMOTION */
-  if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
-    promotePawn(row, col, board);
-  }
+  moveHistory.push(lastMove);
 
   selectedPiece.hasMoved = true;
+
+  /* =========================
+     PROMOTION
+  ========================= */
+
+  if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
+    openPromotionMenu(row, col);
+  } else {
+    finishMove();
+  }
+}
+
+/* =========================
+   PROMOTION
+========================= */
+
+function openPromotionMenu(row, col) {
+  promotionModal.classList.remove("hidden");
+  pendingPromotion = { row, col };
+}
+
+function applyPromotion(type) {
+  const { row, col } = pendingPromotion;
+  const piece = board[row][col];
+
+  piece.type = type;
+  piece.symbol = piece.toUnicode();
+
+  promotionModal.classList.add("hidden");
+  pendingPromotion = null;
+
+  finishMove();
+}
+
+/* =========================
+   MOVE FINALIZATION
+========================= */
+
+function finishMove() {
   turn = turn === "white" ? "black" : "white";
 
   renderBoard(boardContainer, board);
 
-  /* REPETITION */
-  const key = generatePositionKey(board, turn);
-  positionHistory[key] = (positionHistory[key] || 0) + 1;
+  updateHistoryUI();
 
-  if (positionHistory[key] >= 3) {
-    alert("Draw by threefold repetition");
-  }
-
-  /* CHECKMATE */
-  if (isCheckmate(turn, board, lastMove)) {
-    const colorName = turn.charAt(0).toUpperCase() + turn.slice(1);
+  if (isCheckmate(turn, board)) {
+    const name = turn.charAt(0).toUpperCase() + turn.slice(1);
 
     showGameOver(
-      `${colorName} is checkmated!`,
+      `${name} is checkmated!`,
       "No legal moves available."
     );
 
@@ -230,7 +271,7 @@ function onSquareClick(e) {
 }
 
 /* =========================
-   MOVE HIGHLIGHTING
+   HIGHLIGHTING (RESTORED SIMPLE STYLE)
 ========================= */
 
 function highlightMoves(moves) {
@@ -238,12 +279,17 @@ function highlightMoves(moves) {
     const square = document.querySelector(
       `.square[data-row="${m.row}"][data-col="${m.col}"]`
     );
-    square?.classList.add("highlight");
+    if (square) square.classList.add("highlight");
   });
 }
 
+function clearHighlights() {
+  document.querySelectorAll(".square.highlight")
+    .forEach(sq => sq.classList.remove("highlight"));
+}
+
 /* =========================
-   HISTORY (UNICODE UPGRADE)
+   HISTORY (RESTORED CLEAN STYLE)
 ========================= */
 
 function updateHistoryUI() {
@@ -252,61 +298,37 @@ function updateHistoryUI() {
 
   historyDiv.innerHTML = "";
 
-  for (let i = 0; i < moveHistory.length; i += 2) {
-    const row = document.createElement("div");
-    row.classList.add("history-row");
+  moveHistory.forEach((move, i) => {
+    const div = document.createElement("div");
+    div.classList.add("history-row");
 
-    const moveNumber = document.createElement("span");
-    moveNumber.classList.add("move-number");
-    moveNumber.textContent = `${Math.floor(i / 2) + 1}.`;
+    const icon = pieceToUnicode(move.piece, move.color);
 
-    const white = document.createElement("span");
-    const black = document.createElement("span");
+    div.textContent =
+      `${i + 1}. ${icon} ${formatSquare(move.from)} → ${formatSquare(move.to)}`;
 
-    white.classList.add("move", "white-move");
-    black.classList.add("move", "black-move");
+    historyDiv.appendChild(div);
+  });
+}
 
-    white.textContent = moveHistory[i]
-      ? formatMoveSafe(moveHistory[i])
-      : "";
-
-    black.textContent = moveHistory[i + 1]
-      ? formatMoveSafe(moveHistory[i + 1])
-      : "";
-
-    row.appendChild(moveNumber);
-    row.appendChild(white);
-    row.appendChild(black);
-
-    historyDiv.appendChild(row);
-  }
+function formatSquare(pos) {
+  const files = ["a","b","c","d","e","f","g","h"];
+  return `${files[pos.col]}${8 - pos.row}`;
 }
 
 /* =========================
-   UNICODE PIECES
-   "♙"
-    "♟"
+   UNICODE
 ========================= */
 
 function pieceToUnicode(piece, color) {
-  if (!piece) return "";
-
   const map = {
     white: {
-      king: "♔",
-      queen: "♕",
-      rook: "♖",
-      bishop: "♗",
-      knight: "♘",
-      pawn: ""
+      king: "♔", queen: "♕", rook: "♖",
+      bishop: "♗", knight: "♘", pawn: "♙"
     },
     black: {
-      king: "♚",
-      queen: "♛",
-      rook: "♜",
-      bishop: "♝",
-      knight: "♞",
-      pawn: ""
+      king: "♚", queen: "♛", rook: "♜",
+      bishop: "♝", knight: "♞", pawn: "♟"
     }
   };
 
@@ -314,31 +336,10 @@ function pieceToUnicode(piece, color) {
 }
 
 /* =========================
-   MOVE FORMATTER
-========================= */
-
-function formatMoveSafe(move) {
-  const files = ["a","b","c","d","e","f","g","h"];
-
-  if (!move) return "";
-
-  const from = `${files[move.from.col]}${8 - move.from.row}`;
-  const to = `${files[move.to.col]}${8 - move.to.row}`;
-
-  const pieceSymbol = pieceToUnicode(move.piece, move.color);
-  const capture = move.capture ? "×" : "–";
-
-  return `${pieceSymbol}${from}${capture}${to}`;
-}
-
-/* =========================
    RESET
 ========================= */
 
 function resetGame() {
-  gameOver = false;
-  hideGameOver();
-
   board = createFreshBoard();
 
   selectedPiece = null;
@@ -347,17 +348,20 @@ function resetGame() {
   turn = "white";
   lastMove = null;
 
-  halfMoveClock = 0;
-  positionHistory = {};
+  gameOver = false;
   moveHistory = [];
 
+  clearHighlights();
+
   document.getElementById("history").innerHTML = "";
+
+  hideGameOver();
 
   renderBoard(boardContainer, board);
 }
 
 /* =========================
-   GAME OVER UI
+   GAME OVER
 ========================= */
 
 function showGameOver(title, message) {
@@ -368,21 +372,4 @@ function showGameOver(title, message) {
 
 function hideGameOver() {
   gameOverScreen.classList.add("hidden");
-}
-
-/* =========================
-   POSITION KEY
-========================= */
-
-function generatePositionKey(board, turn) {
-  let key = "";
-
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const p = board[r][c];
-      key += p ? p.type[0] + p.color[0] : "--";
-    }
-  }
-
-  return key + turn;
 }
