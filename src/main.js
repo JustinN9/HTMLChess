@@ -14,7 +14,7 @@
  */
 
 import { initialBoard, renderBoard } from './board.js';
-import { promotePawn } from './piece.js';
+import { Piece, promotePawn } from './piece.js';
 import { canMove } from './moves.js';
 import { getLegalMoves } from "./moves.js";
 import { isCheckmate } from "./moves.js";
@@ -22,17 +22,55 @@ import { isInsufficientMaterial } from "./moves.js";
 import { isStalemate } from './moves.js';
 
 const boardContainer = document.getElementById('board');
+const resetButton = document.getElementById("reset");
 
-let board = initialBoard;
+/**
+ * Creates a completely fresh chess board.
+ * This avoids mutating initialBoard.
+ */
+function createFreshBoard() {
+  return [
+    [
+      new Piece("rook", "black"),
+      new Piece("knight", "black"),
+      new Piece("bishop", "black"),
+      new Piece("queen", "black"),
+      new Piece("king", "black"),
+      new Piece("bishop", "black"),
+      new Piece("knight", "black"),
+      new Piece("rook", "black"),
+    ],
+    Array(8).fill(null).map(() => new Piece("pawn", "black")),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null).map(() => new Piece("pawn", "white")),
+    [
+      new Piece("rook", "white"),
+      new Piece("knight", "white"),
+      new Piece("bishop", "white"),
+      new Piece("queen", "white"),
+      new Piece("king", "white"),
+      new Piece("bishop", "white"),
+      new Piece("knight", "white"),
+      new Piece("rook", "white"),
+    ]
+  ];
+}
+
+let board = createFreshBoard();
 let selectedPiece = null;
 let selectedPos = null;
 let turn = "white";
-let lastMove = null; 
+let lastMove = null;
 let halfMoveClock = 0;
 let positionHistory = {};
 
 renderBoard(boardContainer, board);
 addClickHandlers();
+
+resetButton.addEventListener("click", resetGame);
 
 /**
  * Attaches click handler to the board container.
@@ -206,4 +244,25 @@ function generatePositionKey(board, turn) {
   key += turn;
 
   return key;
+}
+
+function resetGame() {
+  board = createFreshBoard();
+
+  selectedPiece = null;
+  selectedPos = null;
+
+  turn = "white";
+  lastMove = null;
+
+  halfMoveClock = 0;
+  positionHistory = {};
+
+  document.getElementById("turn").textContent =
+    "Turn: White";
+
+  document.getElementById("status").textContent = "";
+  document.getElementById("history").innerHTML = "";
+
+  renderBoard(boardContainer, board);
 }
