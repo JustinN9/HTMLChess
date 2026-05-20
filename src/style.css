@@ -223,3 +223,50 @@ button:hover {
 .game-over-box button {
   width: 100%;
 }
+
+/* =========================
+   MOVE HISTORY PANEL
+========================= */
+
+#history {
+  font-size: 13px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* each move row */
+.history-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: default;
+}
+
+/* hover effect like Chess.com */
+.history-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* move number */
+.move-number {
+  opacity: 0.6;
+  text-align: right;
+  padding-right: 6px;
+}
+
+/* moves */
+.move {
+  padding-left: 6px;
+  font-family: monospace;
+}
+
+/* white vs black styling */
+.white-move {
+  color: #ffffff;
+}
+
+.black-move {
+  color: #cfcfcf;
+}
