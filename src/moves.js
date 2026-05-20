@@ -1,5 +1,18 @@
 /**
  * moves.js
+ * Descriptions: This module contains the core game logic of the chess engine.
+ * Author: Justin Norton
+ * Last Updated: 05-20-2026
+ * Notes: 
+ * 
+ *  Handles:
+ *    - Move validation for all pieces
+ *    - Legal move generation
+ *    - Check, checkmate, and draw conditions
+ */
+
+/**
+ * moves.js
  *
  * Handles:
  * - Move validation for all pieces

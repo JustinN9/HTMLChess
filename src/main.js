@@ -1,17 +1,16 @@
 /**
  * main.js
- *
- * Handles:
- * - Game state management
- * - User interaction (click handling)
- * - Turn logic
- * - Rendering updates
- * - Endgame detection
- *
- * This file acts as the controller between:
- * - UI (board rendering)
- * - Game logic (moves.js)
- * - Piece logic (piece.js)
+ * Descriptions: This file acts as the controller between; UI (board rendering), game logic (moves.js) and piece logic (piece.js).
+ * Author: Justin Norton
+ * Last Updated: 05-20-2026
+ * Notes: 
+ * 
+ *  Handles:
+ *    - Game state management
+ *    - User interaction (click handling)
+ *    - Turn logic
+ *    - Rendering updates
+ *    - Endgame detection
  */
 
 import { initialBoard, renderBoard } from './board.js';
@@ -31,8 +30,6 @@ let turn = "white";
 let lastMove = null; 
 let halfMoveClock = 0;
 let positionHistory = {};
-
-
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -76,7 +73,6 @@ function onSquareClick(e) {
   }
 
   const wasCapture = board[row][col] !== null;
-
 
   //Move square
   if (selectedPiece) {
@@ -153,7 +149,6 @@ positionHistory[positionKey] = (positionHistory[positionKey] || 0) + 1;
 if (positionHistory[positionKey] >= 3) {
   alert("Draw by threefold repetition");
 }
-
 
     // Check for endgame conditions
     if (isCheckmate(turn, board)) alert(`${turn} is checkmated!`);

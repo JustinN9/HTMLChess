@@ -1,3 +1,11 @@
+<!--
+index.html
+Description: Main landing page.
+Author: Justin Norton
+Last Updated: 05-19-2026
+Notes: N/A
+-->
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,11 +14,16 @@
   <title>Chess</title>
   <link rel="stylesheet" href="../src/style.css">
 </head>
+
 <body>
+
+  <!-- Coordinates -->
   <div>
     <div class="coords"></div>
     <div id="board"></div>
   </div>
+
+  <!-- Information -->
   <div id="info">
     <div id="turn">Turn: White</div>
     <div id="status"></div>
@@ -18,5 +31,8 @@
     <h4 style="margin-top:16px">Move history</h4>
     <div id="history"></div>
   </div>
+
 </body>
+
+<!-- Scripts -->
 <script type="module" src="../src/main.js"></script>

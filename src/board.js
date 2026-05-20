@@ -1,12 +1,13 @@
 /**
  * board.js
- *
- * Handles:
- * - Initial board setup
- * - Rendering the board state to the DOM
- *
- * This module is strictly responsible for board representation and UI rendering.
- * It does NOT handle move validation or game rules.
+ * Descriptions: This module is strictly responsible for board representation and UI rendering. It does NOT handle move validation or game rules.
+ * Author: Justin Norton
+ * Last Updated: 05-20-2026
+ * Notes:
+ *  
+ *  Handles:
+ *    - Initial board setup
+ *    - Rendering the board state to the DOM
  */
 
 import { Piece } from "./piece.js";
