@@ -67,6 +67,18 @@ let lastMove = null;
 let halfMoveClock = 0;
 let positionHistory = {};
 
+const gameOverScreen = document.getElementById("game-over");
+const gameOverTitle = document.getElementById("game-over-title");
+const gameOverMessage = document.getElementById("game-over-message");
+const gameOverReset = document.getElementById("game-over-reset");
+
+gameOverReset.addEventListener("click", () => {
+  hideGameOver();
+  resetGame();
+});
+
+let gameOver = false;
+
 renderBoard(boardContainer, board);
 addClickHandlers();
 
@@ -92,6 +104,8 @@ function addClickHandlers() {
  * @param {MouseEvent} e
  */
 function onSquareClick(e) {
+
+  if (gameOver) return;
   const square = e.target.closest(".square");
   if (!square) return;
 
@@ -189,7 +203,17 @@ if (positionHistory[positionKey] >= 3) {
 }
 
     // Check for endgame conditions
-    if (isCheckmate(turn, board)) alert(`${turn} is checkmated!`);
+    if (isCheckmate(turn, board, lastMove)) {
+      const colorName = turn.charAt(0).toUpperCase() + turn.slice(1);
+
+      showGameOver(
+        `${colorName} is checkmated!`,
+        "No legal moves available."
+      );
+
+      gameOver = true;
+      return;
+    }
     else if (isInsufficientMaterial(board)) alert("Draw by insufficient material");
     else if (isStalemate(turn, board)) alert(`Stalemate! It's a draw.`);
     else if (halfMoveClock >= 100) alert("Draw by 50-move rule");
@@ -247,6 +271,10 @@ function generatePositionKey(board, turn) {
 }
 
 function resetGame() {
+
+  gameOver = false;
+  hideGameOver();
+
   board = createFreshBoard();
 
   selectedPiece = null;
@@ -265,4 +293,14 @@ function resetGame() {
   document.getElementById("history").innerHTML = "";
 
   renderBoard(boardContainer, board);
+}
+
+function showGameOver(title, message) {
+  gameOverTitle.textContent = title;
+  gameOverMessage.textContent = message;
+  gameOverScreen.classList.remove("hidden");
+}
+
+function hideGameOver() {
+  gameOverScreen.classList.add("hidden");
 }

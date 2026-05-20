@@ -266,23 +266,24 @@ export function getLegalMoves(piece, fr, fc, board, lastMove) {
  * @param {Object} [lastMove] - Last move played (required for full legality checks)
  * @returns {boolean}
  */
-export function isCheckmate(color, board) {
-  // If the king is not in check, it's not checkmate
+export function isCheckmate(color, board, lastMove) {
   if (!isKingInCheck(color, board)) return false;
 
-  // Check if the player has any legal moves
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const piece = board[r][c];
+
       if (piece && piece.color === color) {
-        if (getLegalMoves(piece, r, c, board, lastMove).length > 0) {
-          return false; // At least one legal move exists
+        const moves = getLegalMoves(piece, r, c, board, lastMove);
+
+        if (moves.length > 0) {
+          return false;
         }
       }
     }
   }
 
-  return true; // No legal moves & king in check therefore checkmate
+  return true;
 }
 
 /**
