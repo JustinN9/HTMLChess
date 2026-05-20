@@ -1,72 +1,153 @@
-:root { 
-  --light: #f0d9b5; 
-  --dark: #b58863; 
-  --highlight: #9bd3ff; 
-  --capture: #ffb3b3; 
+/* =========================
+   GLOBAL LAYOUT
+========================= */
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: #202225;
+  color: white;
 }
 
-body { 
-  font-family: Arial, Helvetica, sans-serif; 
-  display: flex; 
-  gap: 20px; 
-  padding: 20px; 
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px;
 }
 
-#board { 
-  display: grid; 
-  grid-template-columns: repeat(8, 64px); 
-  grid-template-rows: repeat(8, 64px); 
-  border: 4px solid #333; 
+/* =========================
+   BOARD WRAPPER
+========================= */
+
+#board-container {
+  padding: 12px;
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.square { 
-  width: 64px; 
-  height: 64px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-size: 36px; 
-  cursor: pointer; 
-  user-select: none; 
+/* =========================
+   BOARD GRID
+========================= */
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, 64px);
+  grid-template-rows: repeat(8, 64px);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.light { background: var(--light); }
-.dark { background: var(--dark); }
-.sq-highlight { outline: 3px solid var(--highlight); }
-.sq-capture { outline: 3px solid var(--capture); }
+/* =========================
+   SQUARES
+========================= */
 
+.square {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+/* Chess.com-like colors */
+.light {
+  background: #eeeed2;
+}
+
+.dark {
+  background: #769656;
+}
+
+/* hover effect */
+.square:hover {
+  filter: brightness(1.08);
+}
+
+/* selected piece */
 .square.selected {
-  background: lightskyblue;
+  outline: 3px solid #f6f669;
 }
 
+/* legal move highlight */
 .square.highlight {
-  background-color: lightslategray;
+  position: relative;
 }
 
-#info { max-width: 300px; }
-
-#turn { 
-  font-weight: bold; 
-  font-size: 18px; 
-  margin-bottom: 10px; 
+/* dot indicator like Chess.com */
+.square.highlight::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  position: absolute;
 }
 
-#history { 
-  height: 360px; 
-  overflow: auto; 
-  border: 1px solid #ccc; 
-  padding: 8px; 
-  background: #fafafa; 
+/* capture highlight (optional future use) */
+.square.capture::after {
+  width: 100%;
+  height: 100%;
+  border: 3px solid rgba(0,0,0,0.25);
+  background: transparent;
 }
 
-button { 
-  padding: 6px 10px; 
-  margin-top: 8px; 
+/* =========================
+   SIDE PANEL
+========================= */
+
+#info {
+  width: 260px;
+  background: #2a2d31;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.coords { 
-  font-size: 12px; 
-  text-align: center; 
-  color: #333; 
-  margin-bottom: 6px; 
+#info h4 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+#turn {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #3a3f44;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #4a5158;
+}
+
+/* =========================
+   MOVE HISTORY
+========================= */
+
+#history {
+  font-size: 14px;
+  line-height: 1.4;
+  max-height: 300px;
+  overflow-y: auto;
 }
