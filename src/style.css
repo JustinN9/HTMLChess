@@ -1,6 +1,6 @@
 /* =========================
-   GLOBAL LAYOUT
-========================= */
+ * Global Layout
+ * ========================= */
 
 body {
   margin: 0;
@@ -18,8 +18,8 @@ body {
 }
 
 /* =========================
-   BOARD WRAPPER
-========================= */
+ * Board Wrapper
+ * ========================= */
 
 #board-container {
   padding: 12px;
@@ -29,8 +29,8 @@ body {
 }
 
 /* =========================
-   BOARD GRID
-========================= */
+ * Board Grid
+ * ========================= */
 
 #board {
   display: grid;
@@ -41,8 +41,8 @@ body {
 }
 
 /* =========================
-   SQUARES
-========================= */
+ * Square
+ * ========================= */
 
 .square {
   width: 64px;
@@ -56,7 +56,7 @@ body {
   transition: background 0.15s ease;
 }
 
-/* Chess.com-like colors */
+/* Chess.com like colors */
 .light {
   background: #eeeed2;
 }
@@ -99,8 +99,8 @@ body {
 }
 
 /* =========================
-   SIDE PANEL
-========================= */
+ * Side Panel
+ * ========================= */
 
 #info {
   width: 260px;
@@ -122,8 +122,8 @@ body {
 }
 
 /* =========================
-   BUTTONS
-========================= */
+ * Buttons
+ * ========================= */
 
 button {
   width: 100%;
@@ -142,8 +142,8 @@ button:hover {
 }
 
 /* =========================
-   MOVE HISTORY
-========================= */
+ * Move History
+ * ========================= */
 
 #history {
   font-size: 14px;
@@ -153,8 +153,8 @@ button:hover {
 }
 
 /* =========================
-   PIECES
-========================= */
+ * Pieces
+ * ========================= */
 
 .piece {
   font-size: 42px;
@@ -181,8 +181,8 @@ button:hover {
 }
 
 /* =========================
-   GAME OVER OVERLAY
-========================= */
+ * Game Over Overlay
+ * ========================= */
 
 #game-over {
   position: fixed;
@@ -225,8 +225,8 @@ button:hover {
 }
 
 /* =========================
-   MOVE HISTORY PANEL
-========================= */
+ * Move History Panel
+ * ========================= */
 
 #history {
   font-size: 13px;
@@ -271,6 +271,33 @@ button:hover {
   color: #cfcfcf;
 }
 
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  white-space: nowrap;
+}
+
+.history-row span {
+  white-space: nowrap;
+}
+
+#history {
+  overflow-x: auto;
+}
+
+#history {
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+}
+
+/* =========================
+ * Promotion Overlay
+ * ========================= */
+
 #promotion-modal {
   position: fixed;
   inset: 0;
@@ -313,28 +340,4 @@ button:hover {
 .promotion-options button:hover {
   background: #555;
   transform: scale(1.1);
-}
-
-.history-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  /* key fix */
-  white-space: nowrap;
-}
-
-.history-row span {
-  white-space: nowrap;
-}
-
-#history {
-  overflow-x: auto; /* prevents breaking layout if it gets long */
-}
-
-#history {
-  max-height: 300px;
-  overflow-y: auto;
-  font-family: system-ui, sans-serif;
-  font-size: 14px;
 }

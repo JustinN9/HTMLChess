@@ -8,6 +8,7 @@ Notes: N/A
 
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -16,44 +17,40 @@ Notes: N/A
 </head>
 
 <body>
+
   <div id="app">
-    
     <div id="board-container">
       <div id="board"></div>
     </div>
-
     <div id="info">
       <div id="turn">Turn: White</div>
       <div id="status"></div>
-
       <button id="reset">Reset Game</button>
-
       <h4>Move history</h4>
       <div id="history"></div>
     </div>
-
   </div>
 
   <div id="promotion-modal" class="hidden">
-  <div class="promotion-box">
-    <h3>Promote Pawn</h3>
+    <div class="promotion-box">
+      <h3>Promote Pawn</h3>
 
-    <div class="promotion-options">
-      <button data-piece="queen">♕</button>
-      <button data-piece="rook">♖</button>
-      <button data-piece="bishop">♗</button>
-      <button data-piece="knight">♘</button>
+      <div class="promotion-options">
+        <button data-piece="queen">♕</button>
+        <button data-piece="rook">♖</button>
+        <button data-piece="bishop">♗</button>
+        <button data-piece="knight">♘</button>
+      </div>
     </div>
-  </div>
   </div>
 
   <div id="game-over" class="hidden">
-  <div class="game-over-box">
-    <h2 id="game-over-title"></h2>
-    <p id="game-over-message"></p>
-    <button id="game-over-reset">New Game</button>
+    <div class="game-over-box">
+      <h2 id="game-over-title"></h2>
+      <p id="game-over-message"></p>
+      <button id="game-over-reset">New Game</button>
+    </div>
   </div>
-</div>
 
 </body>
 
