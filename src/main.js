@@ -2,7 +2,7 @@
  * main.js
  * Descriptions: This file acts as the controller between; UI (board rendering), game logic (moves.js) and piece logic (piece.js).
  * Author: Justin Norton
- * Last Updated: 05-20-2026
+ * Last Updated: 05-25-2026
  * Notes: 
  * 
  *  Handles:
@@ -17,10 +17,6 @@ import { Piece } from './piece.js';
 import { getLegalMoves, isCheckmate } from "./moves.js";
 import { renderBoard } from './board.js';
 
-/* =========================
-   DOM
-========================= */
-
 const boardContainer = document.getElementById('board');
 const resetButton = document.getElementById("reset");
 
@@ -31,9 +27,7 @@ const gameOverReset = document.getElementById("game-over-reset");
 
 const promotionModal = document.getElementById("promotion-modal");
 
-/* =========================
-   STATE
-========================= */
+// State
 
 let board = createFreshBoard();
 
@@ -48,9 +42,7 @@ let moveHistory = [];
 
 let pendingPromotion = null;
 
-/* =========================
-   INIT
-========================= */
+// Init
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -68,9 +60,7 @@ document.querySelectorAll("#promotion-modal button").forEach(btn => {
   });
 });
 
-/* =========================
-   BOARD
-========================= */
+// Board
 
 function createFreshBoard() {
   return [
@@ -103,9 +93,7 @@ function createFreshBoard() {
   ];
 }
 
-/* =========================
-   CLICK HANDLING
-========================= */
+// Clickl Handling
 
 function addClickHandlers() {
   boardContainer.addEventListener("click", onSquareClick);
@@ -123,9 +111,7 @@ function onSquareClick(e) {
 
   clearHighlights();
 
-  /* =========================
-     SELECT PIECE (RESTORED STYLE)
-  ========================= */
+  // Select Piece
 
   if (piece && piece.color === turn) {
     selectedPiece = piece;
@@ -134,7 +120,6 @@ function onSquareClick(e) {
     const moves = getLegalMoves(piece, row, col, board, lastMove);
     highlightMoves(moves);
 
-    // keep original behavior: ONLY move highlights, no extra square styling
     return;
   }
 
@@ -158,9 +143,7 @@ function onSquareClick(e) {
 
   const wasCapture = board[row][col] !== null;
 
-  /* =========================
-     CASTLING
-  ========================= */
+  // Castling
 
   if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
     const r = selectedPos.row;
@@ -176,9 +159,7 @@ function onSquareClick(e) {
     }
   }
 
-  /* =========================
-     EN PASSANT
-  ========================= */
+  // En Passant
 
   if (
     selectedPiece.type === "pawn" &&
@@ -192,9 +173,7 @@ function onSquareClick(e) {
     board[lastMove.to.row][lastMove.to.col] = null;
   }
 
-  /* =========================
-     MOVE
-  ========================= */
+  // Move
 
   board[row][col] = selectedPiece;
   board[selectedPos.row][selectedPos.col] = null;
@@ -210,9 +189,7 @@ function onSquareClick(e) {
 
   selectedPiece.hasMoved = true;
 
-  /* =========================
-     PROMOTION
-  ========================= */
+  // Promotion
 
   if (selectedPiece.type === "pawn" && (row === 0 || row === 7)) {
     openPromotionMenu(row, col);
@@ -221,9 +198,7 @@ function onSquareClick(e) {
   }
 }
 
-/* =========================
-   PROMOTION
-========================= */
+// Promotion
 
 function openPromotionMenu(row, col) {
   promotionModal.classList.remove("hidden");
@@ -243,9 +218,7 @@ function applyPromotion(type) {
   finishMove();
 }
 
-/* =========================
-   MOVE FINALIZATION
-========================= */
+// Move Finalizer
 
 function finishMove() {
   turn = turn === "white" ? "black" : "white";
@@ -270,9 +243,7 @@ function finishMove() {
   selectedPos = null;
 }
 
-/* =========================
-   HIGHLIGHTING (RESTORED SIMPLE STYLE)
-========================= */
+// Highlight
 
 function highlightMoves(moves) {
   moves.forEach(m => {
@@ -288,9 +259,7 @@ function clearHighlights() {
     .forEach(sq => sq.classList.remove("highlight"));
 }
 
-/* =========================
-   HISTORY (RESTORED CLEAN STYLE)
-========================= */
+// History
 
 function updateHistoryUI() {
   const historyDiv = document.getElementById("history");
@@ -316,9 +285,7 @@ function formatSquare(pos) {
   return `${files[pos.col]}${8 - pos.row}`;
 }
 
-/* =========================
-   UNICODE
-========================= */
+// Unicode
 
 function pieceToUnicode(piece, color) {
   const map = {
@@ -335,9 +302,7 @@ function pieceToUnicode(piece, color) {
   return map[color]?.[piece] || "";
 }
 
-/* =========================
-   RESET
-========================= */
+// Reset
 
 function resetGame() {
   board = createFreshBoard();
@@ -360,9 +325,7 @@ function resetGame() {
   renderBoard(boardContainer, board);
 }
 
-/* =========================
-   GAME OVER
-========================= */
+// Reset
 
 function showGameOver(title, message) {
   gameOverTitle.textContent = title;
