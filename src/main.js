@@ -15,6 +15,8 @@
 
 import { Piece } from './piece.js';
 import { getLegalMoves, isCheckmate } from "./moves.js";
+import { resetGame, showGameOver, hideGameOver } from './state.js';
+//import { reset, showGameOver, hideGameOver} from "./state.js"
 import { initialBoard } from './board.js';
 import { renderBoard } from './board.js';
 
@@ -59,9 +61,7 @@ document.querySelectorAll("#promotion-modal button").forEach(btn => {
   });
 });
 
-/* =========================
-   CLICK HANDLING
-========================= */
+// Clicking Handling
 
 function addClickHandlers() {
   boardContainer.addEventListener("click", onSquareClick);
@@ -79,10 +79,6 @@ function onSquareClick(e) {
 
   clearHighlights();
 
-  /* =========================
-     SELECT PIECE (RESTORED STYLE)
-  ========================= */
-
   if (piece && piece.color === turn) {
     selectedPiece = piece;
     selectedPos = { row, col };
@@ -90,7 +86,6 @@ function onSquareClick(e) {
     const moves = getLegalMoves(piece, row, col, board, lastMove);
     highlightMoves(moves);
 
-    // keep original behavior: ONLY move highlights, no extra square styling
     return;
   }
 
@@ -114,9 +109,7 @@ function onSquareClick(e) {
 
   const wasCapture = board[row][col] !== null;
 
-  /* =========================
-     CASTLING
-  ========================= */
+  // Castling
 
   if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
     const r = selectedPos.row;
@@ -289,43 +282,4 @@ function pieceToUnicode(piece, color) {
   };
 
   return map[color]?.[piece] || "";
-}
-
-/* =========================
-   RESET
-========================= */
-
-function resetGame() {
-  board = createFreshBoard();
-
-  selectedPiece = null;
-  selectedPos = null;
-
-  turn = "white";
-  lastMove = null;
-
-  gameOver = false;
-  moveHistory = [];
-
-  clearHighlights();
-
-  document.getElementById("history").innerHTML = "";
-
-  hideGameOver();
-
-  renderBoard(boardContainer, board);
-}
-
-/* =========================
-   GAME OVER
-========================= */
-
-function showGameOver(title, message) {
-  gameOverTitle.textContent = title;
-  gameOverMessage.textContent = message;
-  gameOverScreen.classList.remove("hidden");
-}
-
-function hideGameOver() {
-  gameOverScreen.classList.add("hidden");
 }
