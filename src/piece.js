@@ -2,7 +2,7 @@
  * piece.js
  * Descriptions: Contains all logic related to pieces, responsible for generation and promotion of pieces.
  * Author: Justin Norton
- * Last Updated: 05-20-2026
+ * Last Updated: 05-25-2026
  * Notes: N/A
  */
 

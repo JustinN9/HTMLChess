@@ -15,10 +15,11 @@
 
 import { Piece } from './piece.js';
 import { getLegalMoves, isCheckmate } from "./moves.js";
-import { resetGame, showGameOver, hideGameOver } from './state.js';
-//import { reset, showGameOver, hideGameOver} from "./state.js"
-import { initialBoard } from './board.js';
 import { renderBoard } from './board.js';
+
+/* =========================
+   DOM
+========================= */
 
 const boardContainer = document.getElementById('board');
 const resetButton = document.getElementById("reset");
@@ -30,9 +31,11 @@ const gameOverReset = document.getElementById("game-over-reset");
 
 const promotionModal = document.getElementById("promotion-modal");
 
-// Initializing
+/* =========================
+   STATE
+========================= */
 
-let board = initialBoard();
+let board = createFreshBoard();
 
 let selectedPiece = null;
 let selectedPos = null;
@@ -44,6 +47,10 @@ let gameOver = false;
 let moveHistory = [];
 
 let pendingPromotion = null;
+
+/* =========================
+   INIT
+========================= */
 
 renderBoard(boardContainer, board);
 addClickHandlers();
@@ -61,7 +68,44 @@ document.querySelectorAll("#promotion-modal button").forEach(btn => {
   });
 });
 
-// Clicking Handling
+/* =========================
+   BOARD
+========================= */
+
+function createFreshBoard() {
+  return [
+    [
+      new Piece("rook", "black"),
+      new Piece("knight", "black"),
+      new Piece("bishop", "black"),
+      new Piece("queen", "black"),
+      new Piece("king", "black"),
+      new Piece("bishop", "black"),
+      new Piece("knight", "black"),
+      new Piece("rook", "black"),
+    ],
+    Array(8).fill(null).map(() => new Piece("pawn", "black")),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null),
+    Array(8).fill(null).map(() => new Piece("pawn", "white")),
+    [
+      new Piece("rook", "white"),
+      new Piece("knight", "white"),
+      new Piece("bishop", "white"),
+      new Piece("queen", "white"),
+      new Piece("king", "white"),
+      new Piece("bishop", "white"),
+      new Piece("knight", "white"),
+      new Piece("rook", "white"),
+    ]
+  ];
+}
+
+/* =========================
+   CLICK HANDLING
+========================= */
 
 function addClickHandlers() {
   boardContainer.addEventListener("click", onSquareClick);
@@ -79,6 +123,10 @@ function onSquareClick(e) {
 
   clearHighlights();
 
+  /* =========================
+     SELECT PIECE (RESTORED STYLE)
+  ========================= */
+
   if (piece && piece.color === turn) {
     selectedPiece = piece;
     selectedPos = { row, col };
@@ -86,6 +134,7 @@ function onSquareClick(e) {
     const moves = getLegalMoves(piece, row, col, board, lastMove);
     highlightMoves(moves);
 
+    // keep original behavior: ONLY move highlights, no extra square styling
     return;
   }
 
@@ -109,7 +158,9 @@ function onSquareClick(e) {
 
   const wasCapture = board[row][col] !== null;
 
-  // Castling
+  /* =========================
+     CASTLING
+  ========================= */
 
   if (selectedPiece.type === "king" && Math.abs(col - selectedPos.col) === 2) {
     const r = selectedPos.row;
@@ -282,4 +333,43 @@ function pieceToUnicode(piece, color) {
   };
 
   return map[color]?.[piece] || "";
+}
+
+/* =========================
+   RESET
+========================= */
+
+function resetGame() {
+  board = createFreshBoard();
+
+  selectedPiece = null;
+  selectedPos = null;
+
+  turn = "white";
+  lastMove = null;
+
+  gameOver = false;
+  moveHistory = [];
+
+  clearHighlights();
+
+  document.getElementById("history").innerHTML = "";
+
+  hideGameOver();
+
+  renderBoard(boardContainer, board);
+}
+
+/* =========================
+   GAME OVER
+========================= */
+
+function showGameOver(title, message) {
+  gameOverTitle.textContent = title;
+  gameOverMessage.textContent = message;
+  gameOverScreen.classList.remove("hidden");
+}
+
+function hideGameOver() {
+  gameOverScreen.classList.add("hidden");
 }

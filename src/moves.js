@@ -2,7 +2,7 @@
  * moves.js
  * Descriptions: This module contains the core game logic of the chess engine.
  * Author: Justin Norton
- * Last Updated: 05-20-2026
+ * Last Updated: 05-25-2026
  * Notes: 
  * 
  *  Handles:

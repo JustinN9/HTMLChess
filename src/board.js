@@ -2,7 +2,7 @@
  * board.js
  * Descriptions: This module is strictly responsible for board representation and UI rendering. It does NOT handle move validation or game rules.
  * Author: Justin Norton
- * Last Updated: 05-20-2026
+ * Last Updated: 05-25-2026
  * Notes:
  *  
  *  Handles:
@@ -26,36 +26,34 @@ import { Piece } from "./piece.js";
  *
  * @type {(Piece | null)[][]}
  */
-export function initialBoard() {
-  return [
-    [
-      new Piece("rook", "black"),
-      new Piece("knight", "black"),
-      new Piece("bishop", "black"),
-      new Piece("queen", "black"),
-      new Piece("king", "black"),
-      new Piece("bishop", "black"),
-      new Piece("knight", "black"),
-      new Piece("rook", "black"),
-    ],
-    Array(8).fill(null).map(() => new Piece("pawn", "black")),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null),
-    Array(8).fill(null).map(() => new Piece("pawn", "white")),
-    [
-      new Piece("rook", "white"),
-      new Piece("knight", "white"),
-      new Piece("bishop", "white"),
-      new Piece("queen", "white"),
-      new Piece("king", "white"),
-      new Piece("bishop", "white"),
-      new Piece("knight", "white"),
-      new Piece("rook", "white"),
-    ]
-  ];
-}
+export const initialBoard = [
+  [
+    new Piece("rook", "black"),
+    new Piece("knight", "black"),
+    new Piece("bishop", "black"),
+    new Piece("queen", "black"),
+    new Piece("king", "black"),
+    new Piece("bishop", "black"),
+    new Piece("knight", "black"),
+    new Piece("rook", "black"),
+  ],
+  Array(8).fill(null).map(() => new Piece("pawn", "black")),
+  Array(8).fill(null).map(() => null),
+  Array(8).fill(null).map(() => null),
+  Array(8).fill(null).map(() => null),
+  Array(8).fill(null).map(() => null),
+  Array(8).fill(null).map(() => new Piece("pawn", "white")),
+  [
+    new Piece("rook", "white"),
+    new Piece("knight", "white"),
+    new Piece("bishop", "white"),
+    new Piece("queen", "white"),
+    new Piece("king", "white"),
+    new Piece("bishop", "white"),
+    new Piece("knight", "white"),
+    new Piece("rook", "white"),
+  ],
+];
 
 /**
  * Renders the current board state into a DOM container.
